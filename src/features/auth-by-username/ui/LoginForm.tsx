@@ -5,6 +5,7 @@ import { Link as RouterLink, useNavigate } from "react-router";
 import { FormField } from "@shared/ui";
 import { composeValidators, minLength, required } from "@shared/lib";
 import { useLoginMutation } from "@entities/session";
+import { AppRoute } from "@app/providers/router/routes";
 import type { LoginFormValues } from "../model/types";
 
 export const LoginForm = () => {
@@ -14,7 +15,7 @@ export const LoginForm = () => {
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       await login(values).unwrap();
-      void navigate("/");
+      void navigate(AppRoute.Home);
     } catch {
       return { [FORM_ERROR]: "Неверный логин или пароль" };
     }
@@ -56,7 +57,7 @@ export const LoginForm = () => {
             <Text fontSize="sm" textAlign="center">
               Нет аккаунта?{" "}
               <Link asChild color="blue.500">
-                <RouterLink to="/register">Зарегистрироваться</RouterLink>
+                <RouterLink to={AppRoute.Register}>Зарегистрироваться</RouterLink>
               </Link>
             </Text>
           </VStack>

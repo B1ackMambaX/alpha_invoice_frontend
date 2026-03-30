@@ -5,6 +5,7 @@ import { Link as RouterLink, useNavigate } from "react-router";
 import { FormField } from "@shared/ui";
 import { composeValidators, isEmail, minLength, required } from "@shared/lib";
 import { useRegisterMutation } from "@entities/session";
+import { AppRoute } from "@app/providers/router/routes";
 import type { RegisterFormValues } from "../model/types";
 
 export const RegisterForm = () => {
@@ -14,7 +15,7 @@ export const RegisterForm = () => {
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
       await register(values).unwrap();
-      void navigate("/login");
+      void navigate(AppRoute.Login);
     } catch {
       return {
         [FORM_ERROR]:
@@ -72,7 +73,7 @@ export const RegisterForm = () => {
             <Text fontSize="sm" textAlign="center">
               Уже есть аккаунт?{" "}
               <Link asChild color="blue.500">
-                <RouterLink to="/login">Войти</RouterLink>
+                <RouterLink to={AppRoute.Login}>Войти</RouterLink>
               </Link>
             </Text>
           </VStack>
