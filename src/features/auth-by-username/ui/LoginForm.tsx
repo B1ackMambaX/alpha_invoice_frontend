@@ -1,24 +1,24 @@
-import { Form } from 'react-final-form'
-import { FORM_ERROR } from 'final-form'
-import { Button, VStack, Text, Link } from '@chakra-ui/react'
-import { Link as RouterLink, useNavigate } from 'react-router'
-import { FormField } from '@shared/ui'
-import { composeValidators, minLength, required } from '@shared/lib'
-import { useLoginMutation } from '@entities/session'
-import type { LoginFormValues } from '../model/types'
+import { Form } from "react-final-form";
+import { FORM_ERROR } from "final-form";
+import { Button, VStack, Text, Link } from "@chakra-ui/react";
+import { Link as RouterLink, useNavigate } from "react-router";
+import { FormField } from "@shared/ui";
+import { composeValidators, minLength, required } from "@shared/lib";
+import { useLoginMutation } from "@entities/session";
+import type { LoginFormValues } from "../model/types";
 
 export const LoginForm = () => {
-  const navigate = useNavigate()
-  const [login, { isLoading }] = useLoginMutation()
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
-      await login(values).unwrap()
-      void navigate('/')
+      await login(values).unwrap();
+      void navigate("/");
     } catch {
-      return { [FORM_ERROR]: 'Неверный логин или пароль' }
+      return { [FORM_ERROR]: "Неверный логин или пароль" };
     }
-  }
+  };
 
   return (
     <Form<LoginFormValues> onSubmit={handleSubmit}>
@@ -43,11 +43,18 @@ export const LoginForm = () => {
                 {submitError}
               </Text>
             )}
-            <Button type="submit" colorPalette="blue" loading={isLoading} w="full">
+            <Button
+              type="submit"
+              size="xl"
+              borderRadius="24px"
+              colorPalette="brand"
+              loading={isLoading}
+              w="full"
+            >
               Войти
             </Button>
             <Text fontSize="sm" textAlign="center">
-              Нет аккаунта?{' '}
+              Нет аккаунта?{" "}
               <Link asChild color="blue.500">
                 <RouterLink to="/register">Зарегистрироваться</RouterLink>
               </Link>
@@ -56,5 +63,5 @@ export const LoginForm = () => {
         </form>
       )}
     </Form>
-  )
-}
+  );
+};

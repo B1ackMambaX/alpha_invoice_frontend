@@ -1,11 +1,11 @@
-import { Center, Card, Heading, VStack } from '@chakra-ui/react'
-import { RegisterForm } from '@features/register-by-email'
+import { Center, Card, Heading, VStack } from "@chakra-ui/react";
+import { RegisterForm } from "@features/register-by-email";
 
 export const RegisterPage = () => (
-  <Center minH="100vh" bg="gray.50">
-    <Card.Root w="full" maxW="md" mx={4} boxShadow="lg">
+  <Center minH="100vh" bg="bg.muted">
+    <Card.Root borderRadius="24px" w="full" maxW="md" mx={4} variant="outline">
       <Card.Header pb={0}>
-        <VStack align="start" gap={1}>
+        <VStack align="center" gap={1}>
           <Heading size="xl">Регистрация</Heading>
         </VStack>
       </Card.Header>
@@ -14,4 +14,4 @@ export const RegisterPage = () => (
       </Card.Body>
     </Card.Root>
   </Center>
-)
+);

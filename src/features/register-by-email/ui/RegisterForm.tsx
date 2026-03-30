@@ -1,24 +1,27 @@
-import { Form } from 'react-final-form'
-import { FORM_ERROR } from 'final-form'
-import { Button, VStack, Text, Link } from '@chakra-ui/react'
-import { Link as RouterLink, useNavigate } from 'react-router'
-import { FormField } from '@shared/ui'
-import { composeValidators, isEmail, minLength, required } from '@shared/lib'
-import { useRegisterMutation } from '@entities/session'
-import type { RegisterFormValues } from '../model/types'
+import { Form } from "react-final-form";
+import { FORM_ERROR } from "final-form";
+import { Button, VStack, Text, Link } from "@chakra-ui/react";
+import { Link as RouterLink, useNavigate } from "react-router";
+import { FormField } from "@shared/ui";
+import { composeValidators, isEmail, minLength, required } from "@shared/lib";
+import { useRegisterMutation } from "@entities/session";
+import type { RegisterFormValues } from "../model/types";
 
 export const RegisterForm = () => {
-  const navigate = useNavigate()
-  const [register, { isLoading }] = useRegisterMutation()
+  const navigate = useNavigate();
+  const [register, { isLoading }] = useRegisterMutation();
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
-      await register(values).unwrap()
-      void navigate('/login')
+      await register(values).unwrap();
+      void navigate("/login");
     } catch {
-      return { [FORM_ERROR]: 'Ошибка регистрации. Возможно, пользователь уже существует' }
+      return {
+        [FORM_ERROR]:
+          "Ошибка регистрации. Возможно, пользователь уже существует",
+      };
     }
-  }
+  };
 
   return (
     <Form<RegisterFormValues> onSubmit={handleSubmit}>
@@ -56,11 +59,18 @@ export const RegisterForm = () => {
                 {submitError}
               </Text>
             )}
-            <Button type="submit" colorPalette="blue" loading={isLoading} w="full">
+            <Button
+              size="xl"
+              borderRadius="24px"
+              type="submit"
+              colorPalette="brand"
+              loading={isLoading}
+              w="full"
+            >
               Зарегистрироваться
             </Button>
             <Text fontSize="sm" textAlign="center">
-              Уже есть аккаунт?{' '}
+              Уже есть аккаунт?{" "}
               <Link asChild color="blue.500">
                 <RouterLink to="/login">Войти</RouterLink>
               </Link>
@@ -69,5 +79,5 @@ export const RegisterForm = () => {
         </form>
       )}
     </Form>
-  )
-}
+  );
+};
