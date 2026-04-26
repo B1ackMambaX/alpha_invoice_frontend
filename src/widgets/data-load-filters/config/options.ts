@@ -12,7 +12,10 @@ export const PERIOD_OPTIONS: { value: LoadPeriod; label: string }[] = [
   { value: LoadPeriod.DAY, label: periodDictionary[LoadPeriod.DAY] },
   { value: LoadPeriod.WEEK, label: periodDictionary[LoadPeriod.WEEK] },
   { value: LoadPeriod.MONTH, label: periodDictionary[LoadPeriod.MONTH] },
-  { value: LoadPeriod.MONTH, label: periodDictionary[LoadPeriod.THREE_MONTHS] },
+  {
+    value: LoadPeriod.THREE_MONTHS,
+    label: periodDictionary[LoadPeriod.THREE_MONTHS],
+  },
 ];
 
 export const STATUS_OPTIONS: { value: LoadStatus; label: string }[] = [
