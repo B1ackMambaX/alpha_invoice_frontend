@@ -1,1 +1,1 @@
-export { AbsUploadLogPage } from "./ui/AbsUploadLogPage";
+export { AbsUploadLogPage } from "./ui/abs-upload-log-page";
