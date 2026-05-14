@@ -6,6 +6,7 @@ import { InvoiceProjectsPage } from "@pages/registries/invoice-projects";
 import { FormattedInvoicesPage } from "@pages/registries/formatted-invoices";
 import { InvoiceResponsiblePage } from "@pages/references/invoice-responsible";
 import { VatAccountsPage } from "@pages/references/vat-accounts";
+import { IncomeAccountsPage } from "@pages/references/income-accounts";
 import { BranchesPage } from "@pages/references/branches";
 import { AbsUploadLogPage } from "@pages/abs-upload-log";
 import { RequireAuth } from "./RequireAuth";
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: AppRoute.FormattedInvoices, element: <FormattedInvoicesPage /> },
       { path: AppRoute.InvoiceResponsible, element: <InvoiceResponsiblePage /> },
       { path: AppRoute.VatAccounts, element: <VatAccountsPage /> },
+      { path: AppRoute.IncomeAccounts, element: <IncomeAccountsPage /> },
       { path: AppRoute.Branches, element: <BranchesPage /> },
       { path: AppRoute.AbsUploadLog, element: <AbsUploadLogPage /> },
     ],

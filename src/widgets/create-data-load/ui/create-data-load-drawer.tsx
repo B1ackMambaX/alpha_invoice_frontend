@@ -111,6 +111,7 @@ export function CreateDataLoadDrawer({
                       <Field name="load_type">
                         {({ input }) => (
                           <RadioGroup.Root
+                            colorPalette="brand"
                             value={input.value}
                             onValueChange={(e) => input.onChange(e.value)}
                           >

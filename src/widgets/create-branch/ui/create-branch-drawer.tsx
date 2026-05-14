@@ -9,6 +9,7 @@ import {
 import { Form } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormField, SelectField } from "@shared/ui";
+import { inn as validateInn, kpp as validateKpp } from "@shared/lib";
 import { useCreateBranchMutation } from "@entities/branch";
 import { useGetRegionalCentersQuery } from "@entities/regional-center";
 import type { CreateBranchFormValues } from "../model/types";
@@ -18,8 +19,8 @@ const validate = (values: CreateBranchFormValues) => {
   if (!values.code?.trim()) errors.code = "Обязательное поле";
   if (!values.name?.trim()) errors.name = "Обязательное поле";
   if (!values.regional_center_id) errors.regional_center_id = "Обязательное поле";
-  if (values.inn && values.inn.length > 12) errors.inn = "Максимум 12 символов";
-  if (values.kpp && values.kpp.length > 9)  errors.kpp = "Максимум 9 символов";
+  errors.inn = validateInn(values.inn ?? "");
+  errors.kpp = validateKpp(values.kpp ?? "");
   return errors;
 };
 
@@ -90,8 +91,8 @@ export function CreateBranchDrawer({
                         placeholder="Выберите региональный центр"
                       />
                       <FormField name="address" label="Адрес" placeholder="Необязательно" />
-                      <FormField name="inn" label="ИНН" placeholder="До 12 символов" />
-                      <FormField name="kpp" label="КПП" placeholder="До 9 символов" />
+                      <FormField name="inn" label="ИНН" placeholder="До 12 символов" digitsOnly />
+                      <FormField name="kpp" label="КПП" placeholder="До 9 символов" digitsOnly />
                       {submitError && (
                         <Text color="red.500" fontSize="sm">{submitError}</Text>
                       )}

@@ -10,6 +10,7 @@ import {
 } from "@entities/branch";
 import { BranchesFilters } from "@widgets/branches-filters";
 import { CreateBranchButton } from "@widgets/create-branch";
+import { formatDateTime } from "@shared/lib";
 
 const columns: ColumnDef<BranchItem>[] = [
   { accessorKey: "code", header: "Код" },
@@ -17,16 +18,23 @@ const columns: ColumnDef<BranchItem>[] = [
   { accessorKey: "address", header: "Адрес" },
   { accessorKey: "inn", header: "ИНН" },
   { accessorKey: "kpp", header: "КПП" },
-  { accessorKey: "created_at", header: "Дата создания" },
+  {
+    accessorKey: "created_at",
+    header: "Дата создания",
+    cell: ({ getValue }) => formatDateTime(getValue<string>(), "date"),
+  },
 ];
 
 export const BranchesPage = () => {
   const [filters, setFilters] = useState<BranchFilters>({});
 
-  const { data = [], isFetching, refetch } = useGetBranchesQuery(filters);
+  const { data, currentData, isFetching, refetch } =
+    useGetBranchesQuery(filters);
+  const isLoading = isFetching && !currentData;
 
   return (
     <MainLayout
+      isContentWithoutPadding
       title="Отделения"
       subtitle={<BranchesFilters filters={filters} onChange={setFilters} />}
       actions={<CreateBranchButton onSuccess={refetch} />}
@@ -34,7 +42,8 @@ export const BranchesPage = () => {
       <Box height="100%" display="flex" flexDirection="column">
         <DataTable
           columns={columns}
-          data={data}
+          data={data ?? []}
+          isLoading={isLoading}
           isFetching={isFetching}
           hasNextPage={false}
           onFetchNextPage={() => {}}

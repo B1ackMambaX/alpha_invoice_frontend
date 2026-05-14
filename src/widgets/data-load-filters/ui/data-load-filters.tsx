@@ -1,6 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { type DataLoadLogFilters } from "@entities/data-load-log";
-import { FilterChip } from "./filter-chip";
+import { FilterChip } from "@features/filter-chip";
 import {
   STATUS_OPTIONS,
   PERIOD_OPTIONS,

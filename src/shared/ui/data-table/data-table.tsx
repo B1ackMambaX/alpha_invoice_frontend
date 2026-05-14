@@ -9,12 +9,13 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 
 const OVERSCAN = 5;
-const ROW_HEIGHT = 48;
+const ESTIMATED_ROW_HEIGHT = 48;
 const BORDER = "1px solid #E2E8F0";
 
 export interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
+  isLoading?: boolean;
   isFetching: boolean;
   hasNextPage: boolean;
   onFetchNextPage: () => void;
@@ -23,6 +24,7 @@ export interface DataTableProps<T> {
 export function DataTable<T>({
   columns,
   data,
+  isLoading,
   isFetching,
   hasNextPage,
   onFetchNextPage,
@@ -40,7 +42,7 @@ export function DataTable<T>({
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => ROW_HEIGHT,
+    estimateSize: () => ESTIMATED_ROW_HEIGHT,
     overscan: OVERSCAN,
   });
 
@@ -61,15 +63,25 @@ export function DataTable<T>({
     const el = parentRef.current;
     if (!el || isFetchingRef.current || !hasNextPageRef.current) return;
     const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    if (distanceFromBottom < ROW_HEIGHT * OVERSCAN) {
+    const avgSize =
+      virtualizer.getTotalSize() / (virtualizer.options.count || 1);
+    if (distanceFromBottom < avgSize * OVERSCAN) {
       onFetchNextPageRef.current();
     }
   }, []);
 
+  if (isLoading) {
+    return (
+      <Flex flex="1" justify="center" align="center">
+        <Spinner color="brand" size="lg" />
+      </Flex>
+    );
+  }
+
   return (
     <Flex direction="column" height="100%" overflow="hidden">
       <Box ref={parentRef} overflow="auto" flex="1" onScroll={handleScroll}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
           <thead
             style={{
               position: "sticky",
@@ -88,8 +100,9 @@ export function DataTable<T>({
                       textAlign: "left",
                       borderBottom: BORDER,
                       fontWeight: 600,
-                      whiteSpace: "nowrap",
                       fontSize: "14px",
+                      wordBreak: "break-word",
+                      width: h.getSize(),
                     }}
                   >
                     {flexRender(h.column.columnDef.header, h.getContext())}
@@ -119,7 +132,7 @@ export function DataTable<T>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      style={{ padding: "12px 16px", fontSize: "14px" }}
+                      style={{ padding: "12px 16px", fontSize: "14px", wordBreak: "break-word" }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -141,9 +154,9 @@ export function DataTable<T>({
           </tbody>
         </table>
       </Box>
-      {isFetching && (
+      {isFetching && !isLoading && (
         <Flex justify="center" p={4}>
-          <Spinner colorPalette="brand" />
+          <Spinner color="brand" />
         </Flex>
       )}
     </Flex>

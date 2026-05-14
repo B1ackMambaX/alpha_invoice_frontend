@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Flex, Input, InputGroup } from "@chakra-ui/react";
-import { LuSearch } from "react-icons/lu";
+import { Flex } from "@chakra-ui/react";
 import { useGetRegionalCentersQuery } from "@entities/regional-center";
 import { useGetBranchesQuery } from "@entities/branch";
-import { FilterChip } from "@widgets/data-load-filters/ui/filter-chip";
+import { FilterChip } from "@features/filter-chip";
+import { SearchInput } from "@shared/ui";
 import type { VatAccountFilters } from "@entities/vat-account";
 
 type VatAccountsFiltersProps = {
@@ -11,7 +11,10 @@ type VatAccountsFiltersProps = {
   onChange: (next: VatAccountFilters) => void;
 };
 
-export function VatAccountsFilters({ filters, onChange }: VatAccountsFiltersProps) {
+export function VatAccountsFilters({
+  filters,
+  onChange,
+}: VatAccountsFiltersProps) {
   const { data: centers = [] } = useGetRegionalCentersQuery();
   const { data: branches = [] } = useGetBranchesQuery({
     regional_center_id: filters.regional_center_id,
@@ -24,7 +27,7 @@ export function VatAccountsFilters({ filters, onChange }: VatAccountsFiltersProp
       onChange({ ...filters, account_number: searchValue || undefined });
     }, 400);
     return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export function VatAccountsFilters({ filters, onChange }: VatAccountsFiltersProp
   };
 
   return (
-    <Flex gap={2} mt={3} wrap="wrap" align="center">
+    <Flex gap={2} mt={3} align="center">
       <FilterChip
         label="Региональный центр"
         options={centerOptions}
@@ -52,15 +55,11 @@ export function VatAccountsFilters({ filters, onChange }: VatAccountsFiltersProp
         value={filters.branch_id}
         onChange={(branch_id) => onChange({ ...filters, branch_id })}
       />
-      <InputGroup startElement={<LuSearch />} maxW="220px">
-        <Input
-          size="sm"
-          borderRadius="full"
-          placeholder="Поиск по номеру счёта"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-      </InputGroup>
+      <SearchInput
+        value={searchValue}
+        onChange={setSearchValue}
+        placeholder="Поиск по номеру счёта"
+      />
     </Flex>
   );
 }

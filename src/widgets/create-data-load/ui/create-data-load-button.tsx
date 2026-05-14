@@ -12,8 +12,12 @@ export function CreateDataLoadButton({ onSuccess }: CreateDataLoadButtonProps) {
   return (
     <>
       <Button
+        size="sm"
         colorPalette="brand"
-        borderRadius="24px"
+        borderRadius="12px"
+        py="8px"
+        px="16px"
+        fontSize="14px"
         onClick={() => setIsOpen(true)}
       >
         Загрузить из АБС

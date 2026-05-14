@@ -11,7 +11,7 @@ export function CreateVatAccountButton({ onSuccess }: CreateVatAccountButtonProp
 
   return (
     <>
-      <Button colorPalette="brand" borderRadius="24px" onClick={() => setIsOpen(true)}>
+      <Button size="sm" colorPalette="brand" borderRadius="12px" py="8px" px="16px" fontSize="14px" onClick={() => setIsOpen(true)}>
         Добавить счёт НДС
       </Button>
       <CreateVatAccountDrawer

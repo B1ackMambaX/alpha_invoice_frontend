@@ -1,6 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { useGetRegionalCentersQuery } from "@entities/regional-center";
-import { FilterChip } from "@widgets/data-load-filters/ui/filter-chip";
+import { FilterChip } from "@features/filter-chip";
 import type { BranchFilters } from "@entities/branch";
 
 type BranchesFiltersProps = {

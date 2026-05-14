@@ -1,5 +1,13 @@
+import { useMemo } from "react";
 import { Field } from "react-final-form";
-import { NativeSelect, FieldRoot, FieldLabel, FieldErrorText } from "@chakra-ui/react";
+import {
+  Select,
+  Portal,
+  FieldRoot,
+  FieldLabel,
+  FieldErrorText,
+  createListCollection,
+} from "@chakra-ui/react";
 
 export interface SelectOption {
   value: string;
@@ -13,39 +21,52 @@ interface SelectFieldProps {
   placeholder?: string;
 }
 
-export const SelectField = ({
-  name,
-  label,
-  options,
-  placeholder,
-}: SelectFieldProps) => (
-  <Field name={name}>
-    {({ input, meta }) => {
-      const isInvalid = meta.touched && !!meta.error;
-      return (
-        <FieldRoot invalid={isInvalid}>
-          <FieldLabel>{label}</FieldLabel>
-          <NativeSelect.Root>
-            <NativeSelect.Field
-              {...input}
-              borderRadius="16px"
+export const SelectField = ({ name, label, options, placeholder }: SelectFieldProps) => {
+  const collection = useMemo(
+    () => createListCollection({ items: options, itemToValue: (o) => o.value, itemToString: (o) => o.label }),
+    [options],
+  );
+
+  return (
+    <Field name={name}>
+      {({ input, meta }) => {
+        const isInvalid = meta.touched && !!meta.error;
+        const value = input.value ? [input.value] : [];
+
+        return (
+          <FieldRoot invalid={isInvalid}>
+            <FieldLabel>{label}</FieldLabel>
+            <Select.Root
+              collection={collection}
+              value={value}
+              onValueChange={(e) => input.onChange(e.value[0] ?? "")}
+              onInteractOutside={() => input.onBlur()}
             >
-              {placeholder && (
-                <option value="" disabled>
-                  {placeholder}
-                </option>
-              )}
-              {options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </NativeSelect.Field>
-            <NativeSelect.Indicator />
-          </NativeSelect.Root>
-          {isInvalid && <FieldErrorText>{meta.error}</FieldErrorText>}
-        </FieldRoot>
-      );
-    }}
-  </Field>
-);
+              <Select.Control borderRadius="16px" border="1px solid" borderColor="border">
+                <Select.Trigger>
+                  <Select.ValueText placeholder={placeholder ?? label} />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {collection.items.map((opt) => (
+                      <Select.Item key={opt.value} item={opt}>
+                        <Select.ItemText>{opt.label}</Select.ItemText>
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+            {isInvalid && <FieldErrorText>{meta.error}</FieldErrorText>}
+          </FieldRoot>
+        );
+      }}
+    </Field>
+  );
+};

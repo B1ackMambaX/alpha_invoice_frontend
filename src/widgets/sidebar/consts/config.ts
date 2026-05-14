@@ -39,6 +39,7 @@ export const NAVIGATION_LINKS: NavigationItem[] = [
     children: [
       { label: "Ответственные по счетам-фактурам", to: AppRoute.InvoiceResponsible },
       { label: "Счета по учетам НДС", to: AppRoute.VatAccounts },
+      { label: "Счета доходов", to: AppRoute.IncomeAccounts },
       { label: "Отделения", to: AppRoute.Branches },
     ],
   },

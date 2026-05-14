@@ -4,6 +4,7 @@ import { Sidebar } from "@widgets/sidebar";
 
 type MainLayoutProps = {
   title: string;
+  isContentWithoutPadding?: boolean;
   subtitle?: ReactNode;
   actions?: ReactNode;
   children: ReactNode;
@@ -11,6 +12,7 @@ type MainLayoutProps = {
 
 export const MainLayout = ({
   title,
+  isContentWithoutPadding,
   subtitle,
   actions,
   children,
@@ -27,7 +29,7 @@ export const MainLayout = ({
       </Flex>
       <Box
         borderRadius="12px"
-        p="16px"
+        p={isContentWithoutPadding ? undefined : "16px"}
         bg="white"
         flex="1"
         minH={0}

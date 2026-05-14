@@ -6,6 +6,7 @@ export enum AppRoute {
   FormattedInvoices = "/registries/formatted-invoices",
   InvoiceResponsible = "/references/invoice-responsible",
   VatAccounts = "/references/vat-accounts",
+  IncomeAccounts = "/references/income-accounts",
   Branches = "/references/branches",
   AbsUploadLog = "/abs-upload-log",
 }

@@ -10,6 +10,7 @@ import { Form } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { useFormState } from "react-final-form";
 import { FormField, SelectField } from "@shared/ui";
+import { accountNumber } from "@shared/lib";
 import { useCreateVatAccountMutation } from "@entities/vat-account";
 import { useGetRegionalCentersQuery } from "@entities/regional-center";
 import { useGetBranchesQuery } from "@entities/branch";
@@ -17,7 +18,7 @@ import type { CreateVatAccountFormValues } from "../model/types";
 
 const validate = (values: CreateVatAccountFormValues) => {
   const errors: Partial<Record<keyof CreateVatAccountFormValues, string>> = {};
-  if (!values.account_number?.trim()) errors.account_number = "Обязательное поле";
+  errors.account_number = accountNumber(values.account_number ?? "");
   if (!values.name?.trim()) errors.name = "Обязательное поле";
   if (!values.regional_center_id) errors.regional_center_id = "Обязательное поле";
   if (!values.branch_id) errors.branch_id = "Обязательное поле";
@@ -97,6 +98,7 @@ export function CreateVatAccountDrawer({
                         name="account_number"
                         label="Номер счёта"
                         placeholder="Номер счёта НДС"
+                        digitsOnly
                       />
                       <FormField
                         name="name"

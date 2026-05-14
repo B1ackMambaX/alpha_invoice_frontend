@@ -26,9 +26,12 @@ export function FilterChip<T extends string>({
       <Menu.Trigger asChild>
         <Button
           size="sm"
-          borderRadius="full"
-          variant={value ? "solid" : "outline"}
-          colorPalette={value ? "brand" : "gray"}
+          borderRadius="12px"
+          py="8px"
+          variant="solid"
+          color={value ? "white" : "brand"}
+          bgColor={value ? "brand" : "white"}
+          outline="none"
         >
           {value ? (
             <>

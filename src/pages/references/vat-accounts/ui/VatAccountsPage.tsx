@@ -1,6 +1,14 @@
 import { useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Box, Flex, IconButton, Dialog, Portal, Button, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Dialog,
+  Portal,
+  Button,
+  Text,
+} from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
 import { DataTable } from "@shared/ui";
@@ -15,16 +23,19 @@ import {
   CreateVatAccountButton,
   EditVatAccountDrawer,
 } from "@widgets/create-vat-account";
+import { formatDateTime } from "@shared/lib";
 
 export const VatAccountsPage = () => {
   const [filters, setFilters] = useState<VatAccountFilters>({});
   const [editItem, setEditItem] = useState<VatAccountItem | null>(null);
   const [deleteItem, setDeleteItem] = useState<VatAccountItem | null>(null);
 
-  const { data, isFetching, fetchNextPage, hasNextPage, refetch } =
+  const { data, currentData, isFetching, fetchNextPage, hasNextPage, refetch } =
     useGetVatAccountsInfiniteQuery(filters);
+  const isLoading = isFetching && !currentData;
 
-  const [deleteVatAccount, { isLoading: isDeleting }] = useDeleteVatAccountMutation();
+  const [deleteVatAccount, { isLoading: isDeleting }] =
+    useDeleteVatAccountMutation();
 
   const handleDelete = async () => {
     if (!deleteItem) return;
@@ -35,8 +46,12 @@ export const VatAccountsPage = () => {
 
   const columns: ColumnDef<VatAccountItem>[] = [
     { accessorKey: "account_number", header: "Номер счёта" },
-    { accessorKey: "name",           header: "Наименование" },
-    { accessorKey: "created_at",     header: "Дата создания" },
+    { accessorKey: "name", header: "Наименование" },
+    {
+      accessorKey: "created_at",
+      header: "Дата создания",
+      cell: ({ getValue }) => formatDateTime(getValue<string>(), "date"),
+    },
     {
       id: "actions",
       header: "",
@@ -71,11 +86,13 @@ export const VatAccountsPage = () => {
       title="Счета по учетам НДС"
       subtitle={<VatAccountsFilters filters={filters} onChange={setFilters} />}
       actions={<CreateVatAccountButton onSuccess={refetch} />}
+      isContentWithoutPadding
     >
       <Box height="100%" display="flex" flexDirection="column">
         <DataTable
           columns={columns}
           data={allItems}
+          isLoading={isLoading}
           isFetching={isFetching}
           hasNextPage={hasNextPage ?? false}
           onFetchNextPage={fetchNextPage}
@@ -93,7 +110,9 @@ export const VatAccountsPage = () => {
 
       <Dialog.Root
         open={!!deleteItem}
-        onOpenChange={(e) => { if (!e.open) setDeleteItem(null); }}
+        onOpenChange={(e) => {
+          if (!e.open) setDeleteItem(null);
+        }}
       >
         <Portal>
           <Dialog.Backdrop />
@@ -104,7 +123,8 @@ export const VatAccountsPage = () => {
               </Dialog.Header>
               <Dialog.Body>
                 <Text>
-                  Счёт <strong>{deleteItem?.account_number}</strong> будет удалён без возможности восстановления.
+                  Счёт <strong>{deleteItem?.account_number}</strong> будет
+                  удалён без возможности восстановления.
                 </Text>
               </Dialog.Body>
               <Dialog.Footer gap={3}>
