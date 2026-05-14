@@ -4,19 +4,37 @@ import { Sidebar } from "@widgets/sidebar";
 
 type MainLayoutProps = {
   title: string;
+  isContentWithoutPadding?: boolean;
   subtitle?: ReactNode;
+  actions?: ReactNode;
   children: ReactNode;
 };
 
-export const MainLayout = ({ title, subtitle, children }: MainLayoutProps) => (
-  <Flex minH="100vh">
+export const MainLayout = ({
+  title,
+  isContentWithoutPadding,
+  subtitle,
+  actions,
+  children,
+}: MainLayoutProps) => (
+  <Flex h="100vh">
     <Sidebar />
-    <Flex flexDirection="column" flex="1" p={8} bg="bg.muted">
-      <Box mb={6}>
-        <Heading size="2xl">{title}</Heading>
-        {subtitle}
-      </Box>
-      <Box borderRadius="12px" p="16px" bg="white" flex="1">
+    <Flex flexDirection="column" flex="1" minW={0} p={8} bg="bg.muted">
+      <Flex mb={6} justify="space-between" align="flex-end">
+        <Box>
+          <Heading size="2xl">{title}</Heading>
+          {subtitle}
+        </Box>
+        {actions && <Box>{actions}</Box>}
+      </Flex>
+      <Box
+        borderRadius="12px"
+        p={isContentWithoutPadding ? undefined : "16px"}
+        bg="white"
+        flex="1"
+        minH={0}
+        overflow="hidden"
+      >
         {children}
       </Box>
     </Flex>
