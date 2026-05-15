@@ -8,6 +8,8 @@ interface FormFieldProps {
   placeholder?: string;
   validate?: (value: string) => string | undefined;
   digitsOnly?: boolean;
+  min?: number;
+  max?: number;
 }
 
 export const FormField = ({
@@ -17,6 +19,8 @@ export const FormField = ({
   placeholder,
   validate,
   digitsOnly,
+  min,
+  max,
 }: FormFieldProps) => (
   <Field name={name} validate={validate}>
     {({ input, meta }) => {
@@ -36,6 +40,8 @@ export const FormField = ({
             type={type}
             placeholder={placeholder}
             inputMode={digitsOnly ? "numeric" : undefined}
+            min={min}
+            max={max}
             onChange={handleChange}
           />
           {isInvalid && <FieldErrorText>{meta.error}</FieldErrorText>}

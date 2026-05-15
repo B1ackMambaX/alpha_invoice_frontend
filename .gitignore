@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+graphify-out
 seeds
 dist
 dist-ssr
@@ -24,3 +25,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# AI
+.claude
+CLAUDE.md

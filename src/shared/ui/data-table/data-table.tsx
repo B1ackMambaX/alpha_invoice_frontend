@@ -4,6 +4,8 @@ import {
   getCoreRowModel,
   flexRender,
   type ColumnDef,
+  type SortingState,
+  type OnChangeFn,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
@@ -19,6 +21,8 @@ export interface DataTableProps<T> {
   isFetching: boolean;
   hasNextPage: boolean;
   onFetchNextPage: () => void;
+  sorting?: SortingState;
+  onSortingChange?: OnChangeFn<SortingState>;
 }
 
 export function DataTable<T>({
@@ -28,6 +32,8 @@ export function DataTable<T>({
   isFetching,
   hasNextPage,
   onFetchNextPage,
+  sorting = [],
+  onSortingChange,
 }: DataTableProps<T>) {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +41,9 @@ export function DataTable<T>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualSorting: true,
+    state: { sorting },
+    onSortingChange,
   });
 
   const rows = table.getRowModel().rows;
@@ -92,22 +101,35 @@ export function DataTable<T>({
           >
             {table.getHeaderGroups().map((hg) => (
               <tr key={hg.id}>
-                {hg.headers.map((h) => (
-                  <th
-                    key={h.id}
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      borderBottom: BORDER,
-                      fontWeight: 600,
-                      fontSize: "14px",
-                      wordBreak: "break-word",
-                      width: h.getSize(),
-                    }}
-                  >
-                    {flexRender(h.column.columnDef.header, h.getContext())}
-                  </th>
-                ))}
+                {hg.headers.map((h) => {
+                  const canSort = h.column.getCanSort();
+                  const sorted = h.column.getIsSorted();
+                  return (
+                    <th
+                      key={h.id}
+                      onClick={canSort ? h.column.getToggleSortingHandler() : undefined}
+                      style={{
+                        padding: "12px 16px",
+                        textAlign: "left",
+                        borderBottom: BORDER,
+                        fontWeight: 600,
+                        fontSize: "14px",
+                        wordBreak: "break-word",
+                        width: h.getSize(),
+                        cursor: canSort ? "pointer" : "default",
+                        userSelect: canSort ? "none" : undefined,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {flexRender(h.column.columnDef.header, h.getContext())}
+                      {canSort && (
+                        <span style={{ marginLeft: 4, opacity: sorted ? 1 : 0.35 }}>
+                          {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : "↕"}
+                        </span>
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
