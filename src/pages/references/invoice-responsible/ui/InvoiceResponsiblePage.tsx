@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, SortingState, OnChangeFn } from "@tanstack/react-table";
 import {
   Box,
   Flex,
@@ -26,12 +26,18 @@ import {
 import { formatDateTime } from "@shared/lib";
 
 export const InvoiceResponsiblePage = () => {
-  const [filters, setFilters] = useState<ResponsibleFilters>({});
+  const [filters, setFilters] = useState<Omit<ResponsibleFilters, "sort_by" | "sort_order">>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [editItem, setEditItem] = useState<ResponsibleItem | null>(null);
   const [deleteItem, setDeleteItem] = useState<ResponsibleItem | null>(null);
 
+  const queryFilters: ResponsibleFilters = {
+    ...filters,
+    ...(sorting[0] && { sort_by: sorting[0].id, sort_order: sorting[0].desc ? "DESC" : "ASC" }),
+  };
+
   const { data, currentData, isFetching, fetchNextPage, hasNextPage, refetch } =
-    useGetResponsiblesInfiniteQuery(filters);
+    useGetResponsiblesInfiniteQuery(queryFilters);
   const isLoading = isFetching && !currentData;
 
   const [deleteResponsible, { isLoading: isDeleting }] =
@@ -44,19 +50,25 @@ export const InvoiceResponsiblePage = () => {
     refetch();
   };
 
+  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
+    setSorting((prev) => (typeof updater === "function" ? updater(prev) : updater));
+  };
+
   const columns: ColumnDef<ResponsibleItem>[] = [
-    { accessorKey: "user.username", header: "Имя пользователя" },
-    { accessorKey: "user.full_name", header: "ФИО" },
-    { accessorKey: "department", header: "Отдел" },
+    { accessorKey: "user.username", header: "Имя пользователя", enableSorting: true },
+    { accessorKey: "user.full_name", header: "ФИО", enableSorting: true },
+    { accessorKey: "department", header: "Отдел", enableSorting: true },
     {
       accessorKey: "created_at",
       header: "Дата создания",
+      enableSorting: true,
       cell: ({ getValue }) => formatDateTime(getValue<string>(), "date"),
     },
     {
       id: "actions",
       header: "",
       size: 80,
+      enableSorting: false,
       cell: ({ row }) => (
         <Flex gap={1} justify="flex-end">
           <IconButton
@@ -100,6 +112,8 @@ export const InvoiceResponsiblePage = () => {
           isFetching={isFetching}
           hasNextPage={hasNextPage ?? false}
           onFetchNextPage={fetchNextPage}
+          sorting={sorting}
+          onSortingChange={handleSortingChange}
         />
       </Box>
 

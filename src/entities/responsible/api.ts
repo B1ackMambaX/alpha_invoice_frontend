@@ -28,6 +28,8 @@ const responsibleApi = baseApi.injectEndpoints({
             regional_center_id: queryArg.regional_center_id,
           }),
           ...(queryArg.username && { username: queryArg.username }),
+          ...(queryArg.sort_by && { sort_by: queryArg.sort_by }),
+          ...(queryArg.sort_order && { sort_order: queryArg.sort_order }),
         },
       }),
     }),

@@ -12,7 +12,7 @@ import { Form, Field } from "react-final-form";
 import { FORM_ERROR } from "final-form";
 import { FormField, SelectField } from "@shared/ui";
 import { inn as validateInn, kpp as validateKpp } from "@shared/lib";
-import { useCreateBranchMutation } from "@entities/branch";
+import { useUpdateBranchMutation, type BranchItem } from "@entities/branch";
 import { useGetRegionalCentersQuery } from "@entities/regional-center";
 import type { CreateBranchFormValues } from "../model/types";
 
@@ -26,32 +26,42 @@ const validate = (values: CreateBranchFormValues) => {
   return errors;
 };
 
-interface CreateBranchDrawerProps {
+interface EditBranchDrawerProps {
+  item: BranchItem;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export function CreateBranchDrawer({
-  isOpen,
-  onClose,
-  onSuccess,
-}: CreateBranchDrawerProps) {
-  const [createBranch, { isLoading }] = useCreateBranchMutation();
+export function EditBranchDrawer({ item, isOpen, onClose, onSuccess }: EditBranchDrawerProps) {
+  const [updateBranch, { isLoading }] = useUpdateBranchMutation();
   const { data: centers = [] } = useGetRegionalCentersQuery();
 
   const centerOptions = centers.map((c) => ({ value: c.id, label: c.name }));
 
+  const initialValues: CreateBranchFormValues = {
+    code: item.code,
+    name: item.name,
+    address: item.address ?? "",
+    inn: item.inn ?? "",
+    kpp: item.kpp ?? "",
+    regional_center_id: item.regional_center_id,
+    auto_confirm: item.auto_confirm,
+  };
+
   const handleSubmit = async (values: CreateBranchFormValues) => {
     try {
-      await createBranch({
-        code: values.code,
-        name: values.name,
-        regional_center_id: values.regional_center_id,
-        auto_confirm: values.auto_confirm ?? false,
-        ...(values.address?.trim() && { address: values.address }),
-        ...(values.inn?.trim() && { inn: values.inn }),
-        ...(values.kpp?.trim() && { kpp: values.kpp }),
+      await updateBranch({
+        id: item.id,
+        data: {
+          code: values.code,
+          name: values.name,
+          regional_center_id: values.regional_center_id,
+          auto_confirm: values.auto_confirm ?? false,
+          address: values.address?.trim() || null,
+          inn: values.inn?.trim() || null,
+          kpp: values.kpp?.trim() || null,
+        },
       }).unwrap();
       onSuccess();
       onClose();
@@ -71,7 +81,7 @@ export function CreateBranchDrawer({
         <Drawer.Positioner>
           <Drawer.Content maxW="480px">
             <Drawer.Header fontSize="lg" fontWeight="semibold">
-              <Drawer.Title>Добавить отделение</Drawer.Title>
+              <Drawer.Title>Редактировать отделение</Drawer.Title>
             </Drawer.Header>
             <Drawer.CloseTrigger asChild position="absolute" top="3" insetEnd="3">
               <CloseButton size="sm" />
@@ -80,6 +90,7 @@ export function CreateBranchDrawer({
             <Form<CreateBranchFormValues>
               onSubmit={handleSubmit}
               validate={validate}
+              initialValues={initialValues}
             >
               {({ handleSubmit: submitForm, submitError }) => (
                 <form onSubmit={submitForm} style={{ display: "contents" }}>
@@ -118,7 +129,7 @@ export function CreateBranchDrawer({
                   <Drawer.Footer gap={3}>
                     <Button variant="outline" onClick={onClose}>Отмена</Button>
                     <Button type="submit" colorPalette="brand" loading={isLoading}>
-                      Создать
+                      Сохранить
                     </Button>
                   </Drawer.Footer>
                 </form>

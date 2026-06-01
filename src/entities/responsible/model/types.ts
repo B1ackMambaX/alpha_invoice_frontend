@@ -19,6 +19,8 @@ export interface ResponsibleListResponse {
 export interface ResponsibleFilters {
   regional_center_id?: string;
   username?: string;
+  sort_by?: string;
+  sort_order?: "ASC" | "DESC";
 }
 
 export interface ResponsibleCreate {
