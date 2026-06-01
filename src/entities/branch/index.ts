@@ -1,2 +1,2 @@
-export type { BranchItem, BranchFilters, BranchCreate } from "./model/types";
-export { useGetBranchesQuery, useCreateBranchMutation } from "./api";
+export type { BranchItem, BranchFilters, BranchCreate, BranchUpdate } from "./model/types";
+export { useGetBranchesQuery, useCreateBranchMutation, useUpdateBranchMutation } from "./api";

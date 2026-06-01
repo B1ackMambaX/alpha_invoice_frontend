@@ -25,6 +25,8 @@ const dataLoadLogApi = baseApi.injectEndpoints({
           ...(queryArg.period && { period: queryArg.period }),
           ...(queryArg.status && { status: queryArg.status }),
           ...(queryArg.load_type && { load_type: queryArg.load_type }),
+          ...(queryArg.sort_by && { sort_by: queryArg.sort_by }),
+          ...(queryArg.sort_order && { sort_order: queryArg.sort_order }),
         },
       }),
     }),

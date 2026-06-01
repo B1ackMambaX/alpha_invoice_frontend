@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, SortingState, OnChangeFn } from "@tanstack/react-table";
 import {
   Box,
   Flex,
@@ -26,12 +26,18 @@ import {
 import { formatDateTime } from "@shared/lib";
 
 export const IncomeAccountsPage = () => {
-  const [filters, setFilters] = useState<IncomeAccountFilters>({});
+  const [filters, setFilters] = useState<Omit<IncomeAccountFilters, "sort_by" | "sort_order">>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [editItem, setEditItem] = useState<IncomeAccountItem | null>(null);
   const [deleteItem, setDeleteItem] = useState<IncomeAccountItem | null>(null);
 
+  const queryFilters: IncomeAccountFilters = {
+    ...filters,
+    ...(sorting[0] && { sort_by: sorting[0].id, sort_order: sorting[0].desc ? "DESC" : "ASC" }),
+  };
+
   const { data, currentData, isFetching, fetchNextPage, hasNextPage, refetch } =
-    useGetIncomeAccountsInfiniteQuery(filters);
+    useGetIncomeAccountsInfiniteQuery(queryFilters);
   const isLoading = isFetching && !currentData;
 
   const [deleteIncomeAccount, { isLoading: isDeleting }] =
@@ -44,17 +50,23 @@ export const IncomeAccountsPage = () => {
     refetch();
   };
 
+  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
+    setSorting((prev) => (typeof updater === "function" ? updater(prev) : updater));
+  };
+
   const columns: ColumnDef<IncomeAccountItem>[] = [
-    { accessorKey: "account_number", header: "Номер счёта" },
-    { accessorKey: "name", header: "Наименование" },
+    { accessorKey: "account_number", header: "Номер счёта", enableSorting: true },
+    { accessorKey: "name", header: "Наименование", enableSorting: true },
     {
       accessorKey: "created_at",
       header: "Дата создания",
+      enableSorting: true,
       cell: ({ getValue }) => formatDateTime(getValue<string>(), "date"),
     },
     {
       id: "actions",
       header: "",
+      enableSorting: false,
       cell: ({ row }) => (
         <Flex gap={1} justify="flex-end">
           <IconButton
@@ -98,6 +110,8 @@ export const IncomeAccountsPage = () => {
           isFetching={isFetching}
           hasNextPage={hasNextPage ?? false}
           onFetchNextPage={fetchNextPage}
+          sorting={sorting}
+          onSortingChange={handleSortingChange}
         />
       </Box>
 

@@ -5,4 +5,5 @@ export interface CreateBranchFormValues {
   inn?: string;
   kpp?: string;
   regional_center_id: string;
+  auto_confirm?: boolean;
 }

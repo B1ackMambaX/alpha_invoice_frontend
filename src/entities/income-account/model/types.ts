@@ -19,6 +19,8 @@ export interface IncomeAccountFilters {
   regional_center_id?: string;
   branch_id?: string;
   account_number?: string;
+  sort_by?: string;
+  sort_order?: "ASC" | "DESC";
 }
 
 export interface IncomeAccountCreate {

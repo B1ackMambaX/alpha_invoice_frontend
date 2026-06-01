@@ -31,6 +31,8 @@ const vatAccountApi = baseApi.injectEndpoints({
           ...(queryArg.account_number && {
             account_number: queryArg.account_number,
           }),
+          ...(queryArg.sort_by && { sort_by: queryArg.sort_by }),
+          ...(queryArg.sort_order && { sort_order: queryArg.sort_order }),
         },
       }),
     }),

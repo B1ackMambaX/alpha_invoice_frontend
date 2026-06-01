@@ -12,5 +12,5 @@ export {
   useGetInvoiceQuery,
   useUpdateInvoiceMutation,
   useApproveInvoiceMutation,
-  useCancelInvoiceMutation,
+  useReturnInvoiceToDraftMutation,
 } from "./api";

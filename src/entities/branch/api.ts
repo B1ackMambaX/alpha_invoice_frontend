@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api";
-import type { BranchItem, BranchFilters, BranchCreate } from "./model/types";
+import type { BranchItem, BranchFilters, BranchCreate, BranchUpdate } from "./model/types";
 
 const branchApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -10,6 +10,8 @@ const branchApi = baseApi.injectEndpoints({
           ...(filters.regional_center_id && {
             regional_center_id: filters.regional_center_id,
           }),
+          ...(filters.sort_by && { sort_by: filters.sort_by }),
+          ...(filters.sort_order && { sort_order: filters.sort_order }),
         },
       }),
     }),
@@ -21,7 +23,15 @@ const branchApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+
+    updateBranch: build.mutation<BranchItem, { id: string; data: BranchUpdate }>({
+      query: ({ id, data }) => ({
+        url: `/references/branches/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetBranchesQuery, useCreateBranchMutation } = branchApi;
+export const { useGetBranchesQuery, useCreateBranchMutation, useUpdateBranchMutation } = branchApi;

@@ -14,7 +14,7 @@ import { MainLayout } from "@widgets/main-layout";
 import { DataTable } from "@shared/ui";
 import {
   useGetInvoicesInfiniteQuery,
-  useCancelInvoiceMutation,
+  useReturnInvoiceToDraftMutation,
   type InvoiceListItem,
   type InvoiceFilters,
 } from "@entities/invoice";
@@ -41,12 +41,12 @@ export const FormattedInvoicesPage = () => {
     useGetInvoicesInfiniteQuery(queryFilters);
   const isLoading = isFetching && !currentData;
 
-  const [cancelInvoice, { isLoading: isCancelling }] = useCancelInvoiceMutation();
+  const [returnToDraft, { isLoading: isReturning }] = useReturnInvoiceToDraftMutation();
 
-  const handleCancel = async () => {
+  const handleReturnToDraft = async () => {
     if (!cancelItem) return;
     try {
-      await cancelInvoice(cancelItem.id).unwrap();
+      await returnToDraft(cancelItem.id).unwrap();
       setCancelItem(null);
     } catch {
       // error is non-critical; dialog stays open
@@ -135,12 +135,12 @@ export const FormattedInvoicesPage = () => {
           <Dialog.Positioner>
             <Dialog.Content>
               <Dialog.Header>
-                <Dialog.Title>Отменить счёт-фактуру?</Dialog.Title>
+                <Dialog.Title>Вернуть в черновик?</Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
                 <Text>
                   Счёт-фактура <strong>№{cancelItem?.number}</strong> будет
-                  отменён. Это действие нельзя отменить.
+                  возвращён в статус черновика.
                 </Text>
               </Dialog.Body>
               <Dialog.Footer gap={3}>
@@ -148,11 +148,11 @@ export const FormattedInvoicesPage = () => {
                   Назад
                 </Button>
                 <Button
-                  colorPalette="red"
-                  loading={isCancelling}
-                  onClick={handleCancel}
+                  colorPalette="orange"
+                  loading={isReturning}
+                  onClick={handleReturnToDraft}
                 >
-                  Отменить счёт
+                  Вернуть в черновик
                 </Button>
               </Dialog.Footer>
             </Dialog.Content>

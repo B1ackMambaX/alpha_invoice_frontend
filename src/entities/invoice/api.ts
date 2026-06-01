@@ -54,9 +54,9 @@ const invoiceApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _error, id) => [{ type: 'Invoice' as const, id }, 'Invoice'],
     }),
 
-    cancelInvoice: build.mutation<InvoiceListItem, string>({
+    returnInvoiceToDraft: build.mutation<InvoiceListItem, string>({
       query: (id) => ({
-        url: `/invoices/${id}/cancel`,
+        url: `/invoices/${id}/return-to-draft`,
         method: "POST",
       }),
       invalidatesTags: (_result, _error, id) => [{ type: 'Invoice' as const, id }, 'Invoice'],
@@ -69,5 +69,5 @@ export const {
   useGetInvoiceQuery,
   useUpdateInvoiceMutation,
   useApproveInvoiceMutation,
-  useCancelInvoiceMutation,
+  useReturnInvoiceToDraftMutation,
 } = invoiceApi;

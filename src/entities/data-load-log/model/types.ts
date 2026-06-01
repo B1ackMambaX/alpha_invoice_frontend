@@ -44,4 +44,6 @@ export interface DataLoadLogFilters {
   period?: LoadPeriod;
   status?: LoadStatus;
   load_type?: LoadType;
+  sort_by?: string;
+  sort_order?: "ASC" | "DESC";
 }
