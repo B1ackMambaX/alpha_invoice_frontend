@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { LuX, LuEye } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import { useAppSelector } from "@app/providers/store";
 import {
   useGetInvoicesInfiniteQuery,
@@ -48,7 +48,7 @@ export const FormattedInvoicesPage = () => {
   const user = useAppSelector((state) => state.session.user);
   const canManage = canManageInvoices(user);
   const [filters, setFilters] = useState<Omit<InvoiceFilters, "sort_by" | "sort_order">>({
-    status: "approved",
+    status: "sent",
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [cancelItem, setCancelItem] = useState<InvoiceListItem | null>(null);
@@ -62,7 +62,7 @@ export const FormattedInvoicesPage = () => {
     }),
   };
 
-  const { data, currentData, isFetching, fetchNextPage, hasNextPage } =
+  const { data, currentData, isFetching, fetchNextPage, hasNextPage, refetch } =
     useGetInvoicesInfiniteQuery(queryFilters);
   const isLoading = isFetching && !currentData;
 
@@ -148,11 +148,12 @@ export const FormattedInvoicesPage = () => {
               value={filters.status as FormattedInvoiceStatus | undefined}
               isClearable={false}
               onChange={(status) =>
-                setFilters({ ...filters, status: status ?? "approved" })
+                setFilters({ ...filters, status: status ?? "sent" })
               }
             />
         </InvoiceFiltersWidget>
       }
+      actions={<RefetchButton onClick={refetch} isFetching={isFetching} />}
       isContentWithoutPadding
     >
       <Box height="100%" display="flex" flexDirection="column">

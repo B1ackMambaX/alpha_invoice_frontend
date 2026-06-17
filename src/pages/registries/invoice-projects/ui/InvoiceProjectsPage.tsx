@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPencil, LuCheck, LuEye } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import { useAppSelector } from "@app/providers/store";
 import {
   useGetInvoicesInfiniteQuery,
@@ -42,7 +42,7 @@ export const InvoiceProjectsPage = () => {
     }),
   };
 
-  const { data, currentData, isFetching, fetchNextPage, hasNextPage } =
+  const { data, currentData, isFetching, fetchNextPage, hasNextPage, refetch } =
     useGetInvoicesInfiniteQuery(queryFilters);
   const isLoading = isFetching && !currentData;
 
@@ -119,6 +119,7 @@ export const InvoiceProjectsPage = () => {
     <MainLayout
       title="Проекты счетов-фактур"
       subtitle={<InvoiceFiltersWidget filters={filters} onChange={setFilters} />}
+      actions={<RefetchButton onClick={refetch} isFetching={isFetching} />}
       isContentWithoutPadding
     >
       <Box height="100%" display="flex" flexDirection="column">

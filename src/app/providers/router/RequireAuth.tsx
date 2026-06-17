@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "@app/providers/store";
-import { useGetMeQuery, logout } from "@entities/session";
+import { useGetMeQuery, logoutUser } from "@entities/session";
 import { AppRoute } from "./routes";
 
 export const RequireAuth = () => {
@@ -15,7 +15,7 @@ export const RequireAuth = () => {
 
   useEffect(() => {
     if (isError) {
-      dispatch(logout());
+      dispatch(logoutUser());
     }
   }, [isError, dispatch]);
 

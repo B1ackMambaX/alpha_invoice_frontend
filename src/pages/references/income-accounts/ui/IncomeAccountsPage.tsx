@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import {
   useGetIncomeAccountsInfiniteQuery,
   useDeleteIncomeAccountMutation,
@@ -100,7 +100,7 @@ export const IncomeAccountsPage = () => {
       subtitle={
         <IncomeAccountsFilters filters={filters} onChange={setFilters} />
       }
-      actions={<CreateIncomeAccountButton onSuccess={refetch} />}
+      actions={<Flex gap={2}><RefetchButton onClick={refetch} isFetching={isFetching} /><CreateIncomeAccountButton onSuccess={refetch} /></Flex>}
     >
       <Box height="100%" display="flex" flexDirection="column">
         <DataTable

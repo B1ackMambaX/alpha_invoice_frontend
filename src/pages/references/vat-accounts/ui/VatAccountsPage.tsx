@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import {
   useGetVatAccountsInfiniteQuery,
   useDeleteVatAccountMutation,
@@ -97,7 +97,7 @@ export const VatAccountsPage = () => {
     <MainLayout
       title="Счета по учетам НДС"
       subtitle={<VatAccountsFilters filters={filters} onChange={setFilters} />}
-      actions={<CreateVatAccountButton onSuccess={refetch} />}
+      actions={<Flex gap={2}><RefetchButton onClick={refetch} isFetching={isFetching} /><CreateVatAccountButton onSuccess={refetch} /></Flex>}
       isContentWithoutPadding
     >
       <Box height="100%" display="flex" flexDirection="column">

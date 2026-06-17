@@ -1,4 +1,5 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
+import { baseApi } from '@shared/api'
 import type { SessionState, User } from './types'
 
 const TOKEN_KEY = 'auth_token'
@@ -28,3 +29,8 @@ export const sessionSlice = createSlice({
 })
 
 export const { setToken, setUser, logout } = sessionSlice.actions
+
+export const logoutUser = createAsyncThunk('session/logoutUser', (_, { dispatch }) => {
+  dispatch(logout())
+  dispatch(baseApi.util.resetApiState())
+})

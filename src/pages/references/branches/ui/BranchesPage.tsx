@@ -3,7 +3,7 @@ import type { ColumnDef, SortingState, OnChangeFn } from "@tanstack/react-table"
 import { Box, Badge, Flex, IconButton } from "@chakra-ui/react";
 import { LuPencil } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import {
   useGetBranchesQuery,
   type BranchItem,
@@ -79,7 +79,7 @@ export const BranchesPage = () => {
       isContentWithoutPadding
       title="Отделения"
       subtitle={<BranchesFilters filters={filters} onChange={setFilters} />}
-      actions={<CreateBranchButton onSuccess={refetch} />}
+      actions={<Flex gap={2}><RefetchButton onClick={refetch} isFetching={isFetching} /><CreateBranchButton onSuccess={refetch} /></Flex>}
     >
       <Box height="100%" display="flex" flexDirection="column">
         <DataTable

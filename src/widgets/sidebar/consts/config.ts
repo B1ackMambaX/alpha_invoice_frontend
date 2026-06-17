@@ -1,6 +1,6 @@
 import { AppRoute } from "@app/providers/router/routes";
 import type { IconType } from "react-icons";
-import { LuHouse, LuLayoutList, LuBookOpen, LuDownload } from "react-icons/lu";
+import { LuLayoutList, LuBookOpen, LuDownload, LuFileSpreadsheet } from "react-icons/lu";
 
 type NavigationChild = {
   label: string;
@@ -24,7 +24,6 @@ type NavigationItemParent = {
 export type NavigationItem = NavigationItemSimple | NavigationItemParent;
 
 export const NAVIGATION_LINKS: NavigationItem[] = [
-  { label: "Главная", to: AppRoute.Home, IconContent: LuHouse },
   {
     label: "Реестры",
     IconContent: LuLayoutList,
@@ -44,6 +43,7 @@ export const NAVIGATION_LINKS: NavigationItem[] = [
     ],
   },
   { label: "Журнал загрузки из АБС", to: AppRoute.AbsUploadLog, IconContent: LuDownload },
+  { label: "Отчёты", to: AppRoute.Reports, IconContent: LuFileSpreadsheet },
 ];
 
 export const SIDEBAR_WIDTH = "210px";

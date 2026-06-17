@@ -1,4 +1,4 @@
-import { Field } from "react-final-form";
+import { Field, type FieldValidator } from "react-final-form";
 import {
   DatePicker,
   FieldRoot,
@@ -12,10 +12,11 @@ import { parseDate } from "@internationalized/date";
 interface DatePickerFieldProps {
   name: string;
   label: string;
+  validate?: FieldValidator<string>;
 }
 
-export const DatePickerField = ({ name, label }: DatePickerFieldProps) => (
-  <Field name={name}>
+export const DatePickerField = ({ name, label, validate }: DatePickerFieldProps) => (
+  <Field name={name} validate={validate}>
     {({ input, meta }) => {
       const isInvalid = meta.touched && !!meta.error;
 

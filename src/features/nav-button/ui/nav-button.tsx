@@ -11,7 +11,7 @@ export function NavButton({ isActive, IconContent, label }: NavButtonProps) {
   return (
     <Flex
       gap="8px"
-      alignItems="flex-start"
+      alignItems="center"
       justifyContent="flex-start"
       px={3}
       py={2}

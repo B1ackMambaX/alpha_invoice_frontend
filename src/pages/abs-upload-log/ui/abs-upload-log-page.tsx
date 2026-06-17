@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ColumnDef, SortingState, OnChangeFn } from "@tanstack/react-table";
-import { Box, Badge } from "@chakra-ui/react";
+import { Box, Badge, Flex } from "@chakra-ui/react";
 import { MainLayout } from "@widgets/main-layout";
 import { DataTable } from "@shared/ui";
 import {
@@ -99,7 +99,7 @@ export const AbsUploadLogPage = () => {
       isContentWithoutPadding
       title="Журнал загрузки из АБС"
       subtitle={<DataLoadFilters filters={filters} onChange={setFilters} />}
-      actions={<CreateDataLoadButton onSuccess={refetch} />}
+      actions={<Flex gap={2}><RefetchButton onClick={refetch} isFetching={isFetching} /><CreateDataLoadButton onSuccess={refetch} /></Flex>}
     >
       <Box height="100%" display="flex" flexDirection="column">
         <DataTable

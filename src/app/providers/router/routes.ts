@@ -9,4 +9,5 @@ export enum AppRoute {
   IncomeAccounts = "/references/income-accounts",
   Branches = "/references/branches",
   AbsUploadLog = "/abs-upload-log",
+  Reports = "/reports",
 }

@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import {
   useGetResponsiblesInfiniteQuery,
   useDeleteResponsibleMutation,
@@ -102,7 +102,7 @@ export const InvoiceResponsiblePage = () => {
       subtitle={
         <ResponsibleFiltersBar filters={filters} onChange={setFilters} />
       }
-      actions={<CreateResponsibleButton onSuccess={refetch} />}
+      actions={<Flex gap={2}><RefetchButton onClick={refetch} isFetching={isFetching} /><CreateResponsibleButton onSuccess={refetch} /></Flex>}
     >
       <Box height="100%" display="flex" flexDirection="column">
         <DataTable
