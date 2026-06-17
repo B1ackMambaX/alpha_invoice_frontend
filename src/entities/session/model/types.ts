@@ -1,9 +1,15 @@
+export interface Role {
+  id: string
+  name: string
+}
+
 export interface User {
   id: string
-  email: string
+  email: string | null
   username: string
   full_name: string
   is_active: boolean
+  roles: Role[]
 }
 
 export interface LoginRequest {

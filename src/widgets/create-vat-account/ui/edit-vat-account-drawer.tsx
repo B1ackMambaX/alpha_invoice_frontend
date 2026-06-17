@@ -29,9 +29,10 @@ function BranchSelect() {
   const { values } = useFormState<EditVatAccountFormValues>({
     subscription: { values: true },
   });
+  const regionalCenterId = values?.regional_center_id;
   const { data: branches = [] } = useGetBranchesQuery(
-    { regional_center_id: values.regional_center_id },
-    { skip: !values.regional_center_id }
+    { regional_center_id: regionalCenterId },
+    { skip: !regionalCenterId }
   );
   const branchOptions = branches.map((b) => ({ value: b.id, label: b.name }));
 
@@ -40,7 +41,7 @@ function BranchSelect() {
       name="branch_id"
       label="Отделение"
       options={branchOptions}
-      placeholder={values.regional_center_id ? "Выберите отделение" : "Сначала выберите РЦ"}
+      placeholder={regionalCenterId ? "Выберите отделение" : "Сначала выберите РЦ"}
     />
   );
 }

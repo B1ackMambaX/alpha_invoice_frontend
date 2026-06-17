@@ -7,7 +7,7 @@ import {
   FieldErrorText,
   Input,
   Box,
-  Flex,
+  Button,
   Text,
 } from "@chakra-ui/react";
 import { LuChevronDown } from "react-icons/lu";
@@ -58,19 +58,15 @@ export function UserComboboxField({ name, label, users }: UserComboboxFieldProps
               }}
             >
               <Menu.Trigger asChild>
-                <Box
-                  as="button"
+                <Button
                   type="button"
+                  variant="outline"
                   w="100%"
                   h="10"
                   px="3"
                   borderRadius="16px"
-                  border="1px solid"
                   borderColor={isInvalid ? "red.500" : "border"}
                   bg="transparent"
-                  cursor="pointer"
-                  display="flex"
-                  alignItems="center"
                   justifyContent="space-between"
                   _focus={{ outline: "none", boxShadow: "outline" }}
                 >
@@ -82,7 +78,7 @@ export function UserComboboxField({ name, label, users }: UserComboboxFieldProps
                     {selectedUser ? userLabel(selectedUser) : "Выберите пользователя"}
                   </Text>
                   <LuChevronDown />
-                </Box>
+                </Button>
               </Menu.Trigger>
               <Portal>
                 <Menu.Positioner width="var(--reference-width)">

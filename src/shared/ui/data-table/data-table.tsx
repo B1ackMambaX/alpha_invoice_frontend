@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,8 +10,9 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 
-const OVERSCAN = 5;
-const ESTIMATED_ROW_HEIGHT = 48;
+const OVERSCAN = 8;
+const PREFETCH_ROWS = 60;
+const ESTIMATED_ROW_HEIGHT = 61;
 const BORDER = "1px solid #E2E8F0";
 
 export interface DataTableProps<T> {
@@ -20,7 +21,7 @@ export interface DataTableProps<T> {
   isLoading?: boolean;
   isFetching: boolean;
   hasNextPage: boolean;
-  onFetchNextPage: () => void;
+  onFetchNextPage: () => void | Promise<unknown>;
   sorting?: SortingState;
   onSortingChange?: OnChangeFn<SortingState>;
 }
@@ -47,6 +48,7 @@ export function DataTable<T>({
   });
 
   const rows = table.getRowModel().rows;
+  const totalColumnsWidth = table.getTotalSize();
 
   const virtualizer = useVirtualizer({
     count: rows.length,
@@ -67,17 +69,50 @@ export function DataTable<T>({
   hasNextPageRef.current = hasNextPage;
   const onFetchNextPageRef = useRef(onFetchNextPage);
   onFetchNextPageRef.current = onFetchNextPage;
+  const requestedRowsLengthRef = useRef<number | null>(null);
+  const scrollFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isFetching) {
+      requestedRowsLengthRef.current = null;
+    }
+  }, [isFetching]);
+
+  useEffect(
+    () => () => {
+      if (scrollFrameRef.current !== null) {
+        cancelAnimationFrame(scrollFrameRef.current);
+      }
+    },
+    [],
+  );
+
+  const requestNextPage = useCallback(() => {
+    if (isFetchingRef.current || !hasNextPageRef.current) return;
+    if (requestedRowsLengthRef.current === rows.length) return;
+
+    requestedRowsLengthRef.current = rows.length;
+    void Promise.resolve(onFetchNextPageRef.current()).catch(() => {
+      requestedRowsLengthRef.current = null;
+    });
+  }, [rows.length]);
 
   const handleScroll = useCallback(() => {
-    const el = parentRef.current;
-    if (!el || isFetchingRef.current || !hasNextPageRef.current) return;
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    const avgSize =
-      virtualizer.getTotalSize() / (virtualizer.options.count || 1);
-    if (distanceFromBottom < avgSize * OVERSCAN) {
-      onFetchNextPageRef.current();
-    }
-  }, []);
+    if (scrollFrameRef.current !== null) return;
+
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = null;
+      const el = parentRef.current;
+      if (!el) return;
+
+      const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+      const avgSize =
+        virtualizer.getTotalSize() / (virtualizer.options.count || 1);
+      if (distanceFromBottom < avgSize * PREFETCH_ROWS) {
+        requestNextPage();
+      }
+    });
+  }, [requestNextPage, virtualizer]);
 
   if (isLoading) {
     return (
@@ -90,7 +125,14 @@ export function DataTable<T>({
   return (
     <Flex direction="column" height="100%" overflow="hidden">
       <Box ref={parentRef} overflow="auto" flex="1" onScroll={handleScroll}>
-        <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+        <table
+          style={{
+            width: "100%",
+            minWidth: totalColumnsWidth,
+            borderCollapse: "collapse",
+            tableLayout: "fixed",
+          }}
+        >
           <thead
             style={{
               position: "sticky",
@@ -114,11 +156,12 @@ export function DataTable<T>({
                         borderBottom: BORDER,
                         fontWeight: 600,
                         fontSize: "14px",
+                        lineHeight: 1.25,
                         wordBreak: "break-word",
                         width: h.getSize(),
                         cursor: canSort ? "pointer" : "default",
                         userSelect: canSort ? "none" : undefined,
-                        whiteSpace: "nowrap",
+                        whiteSpace: "normal",
                       }}
                     >
                       {flexRender(h.column.columnDef.header, h.getContext())}
@@ -148,13 +191,18 @@ export function DataTable<T>({
                 <tr
                   key={row.id}
                   data-index={vRow.index}
-                  ref={virtualizer.measureElement}
-                  style={{ borderBottom: BORDER }}
+                  style={{ borderBottom: BORDER, height: ESTIMATED_ROW_HEIGHT }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      style={{ padding: "12px 16px", fontSize: "14px", wordBreak: "break-word" }}
+                      style={{
+                        padding: "12px 16px",
+                        fontSize: "14px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

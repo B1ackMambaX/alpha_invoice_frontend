@@ -1,4 +1,10 @@
-export type InvoiceStatus = "draft" | "approved" | "cancelled";
+export type InvoiceStatus =
+  | "draft"
+  | "review"
+  | "approved"
+  | "sent"
+  | "cancelled"
+  | "error";
 
 export interface InvoiceListItem {
   id: string;

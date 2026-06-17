@@ -19,7 +19,7 @@ const invoiceApi = baseApi.injectEndpoints({
         url: "/invoices",
         params: {
           page: pageParam,
-          page_size: 20,
+          page_size: 100,
           ...(queryArg.status && { status: queryArg.status }),
           ...(queryArg.branch_id && { branch_id: queryArg.branch_id }),
           ...(queryArg.counterparty_id && { counterparty_id: queryArg.counterparty_id }),

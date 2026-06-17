@@ -9,23 +9,28 @@ import {
   Button,
   Text,
 } from "@chakra-ui/react";
-import { LuPencil, LuCheck } from "react-icons/lu";
+import { LuPencil, LuCheck, LuEye } from "react-icons/lu";
 import { MainLayout } from "@widgets/main-layout";
 import { DataTable } from "@shared/ui";
+import { useAppSelector } from "@app/providers/store";
 import {
   useGetInvoicesInfiniteQuery,
   useApproveInvoiceMutation,
   type InvoiceListItem,
   type InvoiceFilters,
 } from "@entities/invoice";
+import { canManageInvoices } from "@entities/session";
 import { InvoiceFilters as InvoiceFiltersWidget } from "@widgets/invoice-filters";
-import { EditInvoiceDrawer } from "@widgets/edit-invoice";
+import { EditInvoiceDrawer, ViewInvoiceDrawer } from "@widgets/edit-invoice";
 import { formatDateTime } from "@shared/lib";
 
 export const InvoiceProjectsPage = () => {
+  const user = useAppSelector((state) => state.session.user);
+  const canManage = canManageInvoices(user);
   const [filters, setFilters] = useState<Omit<InvoiceFilters, "status" | "sort_by" | "sort_order">>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [editItemId, setEditItemId] = useState<string | null>(null);
+  const [viewItemId, setViewItemId] = useState<string | null>(null);
   const [confirmItem, setConfirmItem] = useState<InvoiceListItem | null>(null);
 
   const queryFilters: InvoiceFilters = {
@@ -73,23 +78,36 @@ export const InvoiceProjectsPage = () => {
       enableSorting: false,
       cell: ({ row }) => (
         <Flex gap={1} justify="flex-end">
-          <IconButton
-            size="sm"
-            variant="ghost"
-            aria-label="Редактировать"
-            onClick={() => setEditItemId(row.original.id)}
-          >
-            <LuPencil />
-          </IconButton>
-          <IconButton
-            size="sm"
-            variant="ghost"
-            colorPalette="green"
-            aria-label="Подтвердить"
-            onClick={() => setConfirmItem(row.original)}
-          >
-            <LuCheck />
-          </IconButton>
+          {canManage ? (
+            <>
+                <IconButton
+                  size="sm"
+                  variant="ghost"
+                  aria-label="Редактировать"
+                  onClick={() => setEditItemId(row.original.id)}
+                >
+                  <LuPencil />
+                </IconButton>
+                <IconButton
+                  size="sm"
+                  variant="ghost"
+                  colorPalette="green"
+                  aria-label="Подтвердить"
+                  onClick={() => setConfirmItem(row.original)}
+                >
+                  <LuCheck />
+                </IconButton>
+              </>
+            ) : (
+              <IconButton
+                size="sm"
+                variant="ghost"
+                aria-label="Просмотр"
+                onClick={() => setViewItemId(row.original.id)}
+              >
+                <LuEye />
+              </IconButton>
+            )}
         </Flex>
       ),
     },
@@ -116,7 +134,7 @@ export const InvoiceProjectsPage = () => {
         />
       </Box>
 
-      {editItemId && (
+      {canManage && editItemId && (
         <EditInvoiceDrawer
           invoiceId={editItemId}
           isOpen={true}
@@ -124,42 +142,52 @@ export const InvoiceProjectsPage = () => {
         />
       )}
 
-      <Dialog.Root
-        open={!!confirmItem}
-        onOpenChange={(e) => {
-          if (!e.open) setConfirmItem(null);
-        }}
-      >
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content>
-              <Dialog.Header>
-                <Dialog.Title>Подтвердить счёт-фактуру?</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                <Text>
-                  Счёт-фактура <strong>№{confirmItem?.number}</strong> будет
-                  переведён в статус «Подтверждён» и перемещён в реестр
-                  оформленных счетов.
-                </Text>
-              </Dialog.Body>
-              <Dialog.Footer gap={3}>
-                <Button variant="outline" onClick={() => setConfirmItem(null)}>
-                  Отмена
-                </Button>
-                <Button
-                  colorPalette="green"
-                  loading={isApproving}
-                  onClick={handleApprove}
-                >
-                  Подтвердить
-                </Button>
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
+      {!canManage && viewItemId && (
+        <ViewInvoiceDrawer
+          invoiceId={viewItemId}
+          isOpen={true}
+          onClose={() => setViewItemId(null)}
+        />
+      )}
+
+      {canManage && (
+        <Dialog.Root
+          open={!!confirmItem}
+          onOpenChange={(e) => {
+            if (!e.open) setConfirmItem(null);
+          }}
+        >
+          <Portal>
+            <Dialog.Backdrop />
+            <Dialog.Positioner>
+              <Dialog.Content>
+                <Dialog.Header>
+                  <Dialog.Title>Подтвердить счёт-фактуру?</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                  <Text>
+                    Счёт-фактура <strong>№{confirmItem?.number}</strong> будет
+                    переведён в статус «Подтверждён» и перемещён в реестр
+                    оформленных счетов.
+                  </Text>
+                </Dialog.Body>
+                <Dialog.Footer gap={3}>
+                  <Button variant="outline" onClick={() => setConfirmItem(null)}>
+                    Отмена
+                  </Button>
+                  <Button
+                    colorPalette="green"
+                    loading={isApproving}
+                    onClick={handleApprove}
+                  >
+                    Подтвердить
+                  </Button>
+                </Dialog.Footer>
+              </Dialog.Content>
+            </Dialog.Positioner>
+          </Portal>
+        </Dialog.Root>
+      )}
     </MainLayout>
   );
 };

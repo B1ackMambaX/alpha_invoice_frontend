@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Flex } from "@chakra-ui/react";
 import { useGetBranchesQuery } from "@entities/branch";
 import { useGetCounterpartiesQuery } from "@entities/counterparty";
@@ -8,9 +9,10 @@ import { DateFilter } from "./date-filter";
 type InvoiceFiltersProps = {
   filters: InvoiceFilters;
   onChange: (next: InvoiceFilters) => void;
+  children?: ReactNode;
 };
 
-export function InvoiceFilters({ filters, onChange }: InvoiceFiltersProps) {
+export function InvoiceFilters({ filters, onChange, children }: InvoiceFiltersProps) {
   const { data: branches = [] } = useGetBranchesQuery({});
   const branchOptions = branches.map((b) => ({ value: b.id, label: b.name }));
 
@@ -44,6 +46,7 @@ export function InvoiceFilters({ filters, onChange }: InvoiceFiltersProps) {
         value={filters.date_to}
         onChange={(date_to) => onChange({ ...filters, date_to })}
       />
+      {children}
     </Flex>
   );
 }

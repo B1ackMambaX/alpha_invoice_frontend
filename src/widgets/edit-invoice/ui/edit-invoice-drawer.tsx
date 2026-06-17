@@ -114,19 +114,15 @@ function CounterpartyCombobox({
               }}
             >
               <Menu.Trigger asChild>
-                <Box
-                  as="button"
+                <Button
                   type="button"
+                  variant="outline"
                   w="100%"
                   h="10"
                   px="3"
                   borderRadius="16px"
-                  border="1px solid"
                   borderColor="border"
                   bg="transparent"
-                  cursor="pointer"
-                  display="flex"
-                  alignItems="center"
                   justifyContent="space-between"
                 >
                   <Text fontSize="sm" color={selected ? "fg" : "fg.subtle"} truncate>
@@ -135,7 +131,7 @@ function CounterpartyCombobox({
                       : "Выберите контрагента"}
                   </Text>
                   <LuChevronDown />
-                </Box>
+                </Button>
               </Menu.Trigger>
               <Portal>
                 <Menu.Positioner width="var(--reference-width)">

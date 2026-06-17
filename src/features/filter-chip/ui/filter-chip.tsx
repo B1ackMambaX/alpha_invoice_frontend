@@ -11,6 +11,7 @@ interface FilterChipProps<T extends string> {
   options: Option<T>[];
   value: T | undefined;
   onChange: (value: T | undefined) => void;
+  isClearable?: boolean;
 }
 
 export function FilterChip<T extends string>({
@@ -18,6 +19,7 @@ export function FilterChip<T extends string>({
   options,
   value,
   onChange,
+  isClearable = true,
 }: FilterChipProps<T>) {
   const selectedLabel = options.find((o) => o.value === value)?.label;
 
@@ -36,15 +38,17 @@ export function FilterChip<T extends string>({
           {value ? (
             <>
               {selectedLabel}
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onChange(undefined);
-                }}
-                style={{ marginLeft: 4, fontWeight: "bold", fontSize: 14 }}
-              >
-                ×
-              </span>
+              {isClearable && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange(undefined);
+                  }}
+                  style={{ marginLeft: 4, fontWeight: "bold", fontSize: 14 }}
+                >
+                  ×
+                </span>
+              )}
             </>
           ) : (
             <>

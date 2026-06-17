@@ -19,16 +19,17 @@ const validate = (values: CreateIncomeAccountFormValues) => {
 
 function BranchSelect() {
   const { values } = useFormState<CreateIncomeAccountFormValues>({ subscription: { values: true } });
+  const regionalCenterId = values?.regional_center_id;
   const { data: branches = [] } = useGetBranchesQuery(
-    { regional_center_id: values.regional_center_id },
-    { skip: !values.regional_center_id }
+    { regional_center_id: regionalCenterId },
+    { skip: !regionalCenterId }
   );
   return (
     <SelectField
       name="branch_id"
       label="Отделение"
       options={branches.map((b) => ({ value: b.id, label: b.name }))}
-      placeholder={values.regional_center_id ? "Выберите отделение" : "Сначала выберите РЦ"}
+      placeholder={regionalCenterId ? "Выберите отделение" : "Сначала выберите РЦ"}
     />
   );
 }
