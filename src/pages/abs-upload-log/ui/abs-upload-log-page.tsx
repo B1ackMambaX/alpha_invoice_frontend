@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ColumnDef, SortingState, OnChangeFn } from "@tanstack/react-table";
 import { Box, Badge, Flex } from "@chakra-ui/react";
 import { MainLayout } from "@widgets/main-layout";
-import { DataTable } from "@shared/ui";
+import { DataTable, RefetchButton } from "@shared/ui";
 import {
   useGetDataLoadLogInfiniteQuery,
   type DataLoadLogItem,
